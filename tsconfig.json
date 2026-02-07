@@ -1,26 +1,19 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
+    "module": "NodeNext",
     "lib": ["ES2022", "DOM"],
-    "rootDir": ".",
-    "outDir": "dist",
+    "moduleResolution": "NodeNext",
+    "rootDir": "./src",
+    "outDir": "./dist",
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
     "noEmit": true,
     "strict": true,
-    "noImplicitOverride": true,
-    "noUncheckedIndexedAccess": true,
-    "noFallthroughCasesInSwitch": true,
     "skipLibCheck": true,
-    "resolveJsonModule": true,
-    "types": ["vitest/globals", "node"],
-    "verbatimModuleSyntax": true,
-    "jsx": "react-jsx",
-    "jsxImportSource": "preact"
+    "esModuleInterop": true
   },
-  "include": ["src", "test", "types", "tsup.config.ts", "vitest.config.ts"],
+  "include": ["src/**/*"],
   "exclude": ["dist", "node_modules"]
 }

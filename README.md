@@ -1,165 +1,42 @@
-# Quartz Community Plugin Template
+# @quartz-community/types
 
-Production-ready template for building, testing, and publishing Quartz community plugins. It mirrors
-Quartz's native plugin patterns and uses a factory-function API similar to Astro integrations:
-plugins are created by functions that return objects with `name` and lifecycle hooks.
+Type definitions for Quartz community plugins. This package provides TypeScript interfaces and types that mirror the internal Quartz types, enabling external plugins to have full type safety without depending on the core Quartz package.
 
-## Highlights
-
-- ✅ Quartz-compatible transformer/filter/emitter examples
-- ✅ TypeScript-first with exported types for consumers
-- ✅ `tsup` bundling + declaration output
-- ✅ Vitest testing setup with example tests
-- ✅ Linting/formatting with ESLint + Prettier
-- ✅ CI workflow for checks and npm publishing
-- ✅ Demonstrates CSS/JS resource injection and remark/rehype usage
-
-## Getting started
+## Installation
 
 ```bash
-npm install
-npm run build
+npm install @quartz-community/types
 ```
 
-## Usage in Quartz
+## Usage
 
-Install your plugin into a Quartz site and register it in `quartz.config.ts`:
-
-```ts
+```typescript
 import {
-  ExampleTransformer,
-  ExampleFilter,
-  ExampleEmitter,
-} from "@quartz-community/plugin-template";
+  QuartzComponent,
+  QuartzComponentProps,
+  ExplorerOptions,
+} from "@quartz-community/types";
 
-export default {
-  configuration: {
-    pageTitle: "My Garden",
-  },
-  plugins: {
-    transformers: [ExampleTransformer({ highlightToken: "==" })],
-    filters: [ExampleFilter({ allowDrafts: false })],
-    emitters: [ExampleEmitter({ manifestSlug: "plugin-manifest" })],
-  },
+const MyComponent: QuartzComponent = (props: QuartzComponentProps) => {
+  // Component implementation
 };
+
+MyComponent.css = `
+  .my-component { /* styles */ }
+`;
+
+MyComponent.afterDOMLoaded = `
+  // Client-side script
+`;
 ```
 
-## Plugin factory pattern (Astro-style)
+## Included Types
 
-Quartz plugins are factory functions that return an object with a `name` and hook implementations.
-This mirrors Astro's integration pattern (a function returning an object of hooks), which makes
-composition and configuration explicit and predictable.
-
-```ts
-import type { QuartzTransformerPlugin } from "@jackyzha0/quartz/plugins/types";
-
-export const MyTransformer: QuartzTransformerPlugin<{ enabled: boolean }> = (opts) => {
-  return {
-    name: "MyTransformer",
-    markdownPlugins() {
-      return [];
-    },
-  };
-};
-```
-
-## Examples included
-
-### Transformer
-
-`ExampleTransformer` shows how to:
-
-- apply a custom remark plugin
-- run a rehype plugin
-- inject CSS/JS resources
-- perform a text transform hook
-
-```ts
-import { ExampleTransformer } from "@quartz-community/plugin-template";
-
-ExampleTransformer({
-  highlightToken: "==",
-  headingClass: "example-plugin-heading",
-  enableGfm: true,
-  addHeadingSlugs: true,
-});
-```
-
-The transformer uses a custom remark plugin to convert `==highlight==` into bold text and a rehype
-plugin to attach a class to all headings. It also injects a small inline CSS/JS snippet.
-
-### Filter
-
-`ExampleFilter` demonstrates frontmatter-driven filtering:
-
-```ts
-ExampleFilter({
-  allowDrafts: false,
-  excludeTags: ["private", "wip"],
-  excludePathPrefixes: ["_drafts/", "_private/"],
-});
-```
-
-### Emitter
-
-`ExampleEmitter` emits a JSON manifest of all pages:
-
-```ts
-ExampleEmitter({
-  manifestSlug: "plugin-manifest",
-  includeFrontmatter: true,
-  metadata: { project: "My Garden" },
-  transformManifest: (json) => json.replace("My Garden", "Quartz"),
-});
-```
-
-## API reference
-
-### `ExampleTransformer(options)`
-
-| Option            | Type      | Default                    | Description                   |
-| ----------------- | --------- | -------------------------- | ----------------------------- |
-| `highlightToken`  | `string`  | `"=="`                     | Token used to highlight text. |
-| `headingClass`    | `string`  | `"example-plugin-heading"` | Class added to headings.      |
-| `enableGfm`       | `boolean` | `true`                     | Enables `remark-gfm`.         |
-| `addHeadingSlugs` | `boolean` | `true`                     | Enables `rehype-slug`.        |
-
-### `ExampleFilter(options)`
-
-| Option                | Type       | Default                     | Description               |
-| --------------------- | ---------- | --------------------------- | ------------------------- |
-| `allowDrafts`         | `boolean`  | `false`                     | Publish draft pages.      |
-| `excludeTags`         | `string[]` | `["private"]`               | Tags to exclude.          |
-| `excludePathPrefixes` | `string[]` | `["_drafts/", "_private/"]` | Path prefixes to exclude. |
-
-### `ExampleEmitter(options)`
-
-| Option                | Type                       | Default                                   | Description                               |
-| --------------------- | -------------------------- | ----------------------------------------- | ----------------------------------------- |
-| `manifestSlug`        | `string`                   | `"plugin-manifest"`                       | Output filename (without extension).      |
-| `includeFrontmatter`  | `boolean`                  | `true`                                    | Include frontmatter in output.            |
-| `metadata`            | `Record<string, unknown>`  | `{ generator: "Quartz Plugin Template" }` | Extra metadata in manifest.               |
-| `transformManifest`   | `(json: string) => string` | `undefined`                               | Custom transformer for emitted JSON.      |
-| `manifestScriptClass` | `string`                   | `undefined`                               | Optional CSS class if rendered into HTML. |
-
-## Testing
-
-```bash
-npm test
-```
-
-## Build and lint
-
-```bash
-npm run build
-npm run lint
-npm run format
-```
-
-## Publishing
-
-Tags matching `v*` trigger the GitHub Actions publish workflow. Ensure `NPM_TOKEN` is set in the
-repository secrets.
+- **Component Types**: `QuartzComponent`, `QuartzComponentProps`, `StringResource`
+- **Plugin Types**: `QuartzTransformerPlugin`, `QuartzFilterPlugin`, `QuartzEmitterPlugin`
+- **Data Types**: `FileTrieNode`, `ContentIndex`, `ContentIndexEntry`
+- **Component Options**: `ExplorerOptions`, `GraphOptions`, `SearchOptions`, `D3Config`
+- **Utility Types**: `HTMLAttributes`, `EventHandler`, `CleanupFunction`, `ClassValue`
 
 ## License
 
