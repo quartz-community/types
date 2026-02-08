@@ -1,4 +1,7 @@
-// Component Types
+// ============================================================================
+// Core Component Types - The contract between Quartz and plugins
+// ============================================================================
+
 export type QuartzComponentProps = {
   ctx: any
   externalResources: any
@@ -22,7 +25,10 @@ export type QuartzComponentConstructor<Options extends object | undefined = unde
 
 export type StringResource = string | string[]
 
-// Plugin Types
+// ============================================================================
+// Plugin Types - What Quartz expects from plugins
+// ============================================================================
+
 export interface QuartzTransformerPluginInstance {
   name: string
   markdownPlugins?: () => any[]
@@ -49,74 +55,10 @@ export interface QuartzEmitterPluginInstance {
 
 export type QuartzEmitterPlugin<Options = undefined> = (opts: Options) => QuartzEmitterPluginInstance
 
-// Data Types
-export interface FileTrieNode {
-  slugSegments: string[]
-  data: any | null
-  children: FileTrieNode[]
-  isFolder: boolean
-  fileSegmentHint?: string
-}
+// ============================================================================
+// Utility Types - Commonly used helper types
+// ============================================================================
 
-export interface FileTrieConfig {
-  sortFn?: (a: FileTrieNode, b: FileTrieNode) => number
-  filterFn?: (node: FileTrieNode) => boolean
-  mapFn?: (node: FileTrieNode) => void
-  order?: Array<"filter" | "map" | "sort">
-}
-
-export interface ContentIndexEntry {
-  slug: string
-  filePath: string
-  title: string
-  content: string
-  tags: string[]
-  links: string[]
-}
-
-export type ContentIndex = Record<string, ContentIndexEntry>
-
-// Component Options
-export interface ComponentOptions {
-  title?: string
-}
-
-export interface ExplorerOptions extends ComponentOptions {
-  folderDefaultState: "collapsed" | "open"
-  folderClickBehavior: "collapse" | "link"
-  useSavedState: boolean
-  sortFn?: (a: FileTrieNode, b: FileTrieNode) => number
-  filterFn?: (node: FileTrieNode) => boolean
-  mapFn?: (node: FileTrieNode) => void
-  order?: Array<"filter" | "map" | "sort">
-}
-
-export interface D3Config {
-  drag: boolean
-  zoom: boolean
-  depth: number
-  scale: number
-  repelForce: number
-  centerForce: number
-  linkDistance: number
-  fontSize: number
-  opacityScale: number
-  removeTags: string[]
-  showTags: boolean
-  focusOnHover?: boolean
-  enableRadial?: boolean
-}
-
-export interface GraphOptions {
-  localGraph?: Partial<D3Config>
-  globalGraph?: Partial<D3Config>
-}
-
-export interface SearchOptions extends ComponentOptions {
-  enablePreview: boolean
-}
-
-// Utility Types
 export type HTMLAttributes = Record<string, string | number | boolean | undefined>
 
 export type EventHandler = (event: Event) => void
