@@ -1,19 +1,117 @@
-import { ComponentType } from "preact";
+import type { ComponentType } from "preact";
+import type { Root as HtmlRoot } from "hast";
+import type { Root as MdRoot } from "mdast";
+import type { Data, VFile } from "vfile";
+import type { PluggableList } from "unified";
+
+// ============================================================================
+// Path Types - Branded string types for type-safe file paths
+// ============================================================================
+
+export type FilePath = string & { _brand: "FilePath" };
+export type FullSlug = string & { _brand: "FullSlug" };
+
+export function joinSegments(...segments: string[]): FilePath {
+  return segments
+    .filter((segment) => segment.length > 0)
+    .join("/")
+    .replace(/\/+/g, "/") as FilePath;
+}
+
+// ============================================================================
+// Resource Types - CSS/JS resources that plugins can inject
+// ============================================================================
+
+export type JSResource =
+  | {
+      loadTime: "beforeDOMReady" | "afterDOMReady";
+      moduleType?: "module";
+      spaPreserve?: boolean;
+      src: string;
+      contentType: "external";
+    }
+  | {
+      loadTime: "beforeDOMReady" | "afterDOMReady";
+      moduleType?: "module";
+      spaPreserve?: boolean;
+      script: string;
+      contentType: "inline";
+    };
+
+export type CSSResource = {
+  content: string;
+  inline?: boolean;
+  spaPreserve?: boolean;
+};
+
+export interface StaticResources {
+  css: CSSResource[];
+  js: JSResource[];
+  additionalHead: unknown[];
+}
+
+// ============================================================================
+// Config Types - Quartz configuration
+// ============================================================================
+
+export interface QuartzConfig {
+  configuration: {
+    baseUrl?: string;
+    locale?: string;
+    [key: string]: unknown;
+  };
+  locale?: string;
+  [key: string]: unknown;
+}
+
+// ============================================================================
+// Context Types - Build context passed to plugin hooks
+// ============================================================================
+
+export interface Argv {
+  directory: string;
+  verbose: boolean;
+  output: string;
+  serve: boolean;
+  watch: boolean;
+  port: number;
+  wsPort: number;
+  remoteDevHost?: string;
+  concurrency?: number;
+}
+
+export interface BuildCtx {
+  buildId: string;
+  argv: Argv;
+  cfg: QuartzConfig;
+  allSlugs: FullSlug[];
+  allFiles: FilePath[];
+  incremental: boolean;
+}
+
+// ============================================================================
+// VFile Types - Content data types
+// ============================================================================
+
+export type QuartzPluginData = Data;
+export type MarkdownContent = [MdRoot, VFile];
+export type ProcessedContent = [HtmlRoot, VFile];
 
 // ============================================================================
 // Core Component Types - The contract between Quartz and plugins
 // ============================================================================
 
 export type QuartzComponentProps = {
-  ctx: any;
-  externalResources: any;
-  fileData: any;
-  cfg: any;
-  children: any;
-  tree: any;
-  allFiles: any[];
+  ctx: unknown;
+  externalResources: StaticResources;
+  fileData: QuartzPluginData & Record<string, unknown>;
+  cfg: QuartzConfig;
+  children: unknown;
+  tree: HtmlRoot;
+  allFiles: (QuartzPluginData & Record<string, unknown>)[];
   displayClass?: "mobile-only" | "desktop-only";
-} & Record<string, any>;
+  [key: string]: unknown;
+};
 
 export type QuartzComponent = ComponentType<QuartzComponentProps> & {
   css?: string | string[] | undefined;
@@ -31,35 +129,66 @@ export type StringResource = string | string[];
 // Plugin Types - What Quartz expects from plugins
 // ============================================================================
 
-export interface QuartzTransformerPluginInstance {
-  name: string;
-  markdownPlugins?: () => any[];
-  htmlPlugins?: () => any[];
-  textTransform?: (ctx: any, text: string) => string;
+type OptionType = object | undefined;
+type ExternalResourcesFn = (
+  ctx: BuildCtx,
+) => Partial<StaticResources> | undefined;
+
+export type { ExternalResourcesFn };
+
+export interface PluginTypes {
+  transformers: QuartzTransformerPluginInstance[];
+  filters: QuartzFilterPluginInstance[];
+  emitters: QuartzEmitterPluginInstance[];
 }
 
-export type QuartzTransformerPlugin<Options = undefined> = (
-  opts: Options,
+export type QuartzTransformerPlugin<Options extends OptionType = undefined> = (
+  opts?: Options,
 ) => QuartzTransformerPluginInstance;
 
-export interface QuartzFilterPluginInstance {
+export type QuartzTransformerPluginInstance = {
   name: string;
-  shouldPublish?: (ctx: any, file: any) => boolean;
-}
+  textTransform?: (ctx: BuildCtx, src: string) => string;
+  markdownPlugins?: (ctx: BuildCtx) => PluggableList;
+  htmlPlugins?: (ctx: BuildCtx) => PluggableList;
+  externalResources?: ExternalResourcesFn;
+};
 
-export type QuartzFilterPlugin<Options = undefined> = (
-  opts: Options,
+export type QuartzFilterPlugin<Options extends OptionType = undefined> = (
+  opts?: Options,
 ) => QuartzFilterPluginInstance;
 
-export interface QuartzEmitterPluginInstance {
+export type QuartzFilterPluginInstance = {
   name: string;
-  emit?: (ctx: any, content: any[]) => Promise<any[]>;
-  getDependencies?: (ctx: any, content: any[]) => Promise<string[]>;
-}
+  shouldPublish(ctx: BuildCtx, content: ProcessedContent): boolean;
+};
 
-export type QuartzEmitterPlugin<Options = undefined> = (
-  opts: Options,
+export type ChangeEvent = {
+  type: "add" | "change" | "delete";
+  path: FilePath;
+  file?: VFile;
+};
+
+export type QuartzEmitterPlugin<Options extends OptionType = undefined> = (
+  opts?: Options,
 ) => QuartzEmitterPluginInstance;
+
+export type QuartzEmitterPluginInstance = {
+  name: string;
+  emit: (
+    ctx: BuildCtx,
+    content: ProcessedContent[],
+    resources: StaticResources,
+  ) => Promise<FilePath[]> | AsyncGenerator<FilePath>;
+  partialEmit?: (
+    ctx: BuildCtx,
+    content: ProcessedContent[],
+    resources: StaticResources,
+    changeEvents: ChangeEvent[],
+  ) => Promise<FilePath[]> | AsyncGenerator<FilePath> | null;
+  getQuartzComponents?: (ctx: BuildCtx) => QuartzComponent[];
+  externalResources?: ExternalResourcesFn;
+};
 
 // ============================================================================
 // Utility Types - Commonly used helper types
