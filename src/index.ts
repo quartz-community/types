@@ -125,7 +125,7 @@ export type QuartzComponentProps = {
   fileData: QuartzPluginData & Record<string, unknown>;
   cfg: GlobalConfiguration;
   children: unknown;
-  tree: HtmlRoot;
+  tree: unknown;
   allFiles: (QuartzPluginData & Record<string, unknown>)[];
   displayClass?: "mobile-only" | "desktop-only";
   [key: string]: unknown;
