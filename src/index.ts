@@ -1,4 +1,3 @@
-import type { ComponentType } from "preact";
 import type { Root as HtmlRoot } from "hast";
 import type { Root as MdRoot } from "mdast";
 import type { Data, VFile } from "vfile";
@@ -54,13 +53,32 @@ export interface StaticResources {
 // Config Types - Quartz configuration
 // ============================================================================
 
-export interface QuartzConfig {
-  configuration: {
-    baseUrl?: string;
-    locale?: string;
-    [key: string]: unknown;
-  };
+/**
+ * Flat configuration object that components receive as `cfg` prop.
+ * This matches Quartz's `GlobalConfiguration` — the resolved config
+ * passed to components at render time (i.e. `ctx.cfg.configuration`).
+ */
+export interface GlobalConfiguration {
+  pageTitle?: string;
+  pageTitleSuffix?: string;
+  enableSPA?: boolean;
+  enablePopovers?: boolean;
+  analytics?: unknown;
+  ignorePatterns?: string[];
+  defaultDateType?: string;
+  baseUrl?: string;
+  theme?: unknown;
   locale?: string;
+  [key: string]: unknown;
+}
+
+/**
+ * Full Quartz config with nested `configuration` property.
+ * This is what `BuildCtx.cfg` holds — used in plugin hooks
+ * (transformers, filters, emitters), NOT in component props.
+ */
+export interface QuartzConfig {
+  configuration: GlobalConfiguration;
   [key: string]: unknown;
 }
 
@@ -105,7 +123,7 @@ export type QuartzComponentProps = {
   ctx: unknown;
   externalResources: StaticResources;
   fileData: QuartzPluginData & Record<string, unknown>;
-  cfg: QuartzConfig;
+  cfg: GlobalConfiguration;
   children: unknown;
   tree: HtmlRoot;
   allFiles: (QuartzPluginData & Record<string, unknown>)[];
@@ -113,7 +131,7 @@ export type QuartzComponentProps = {
   [key: string]: unknown;
 };
 
-export type QuartzComponent = ComponentType<QuartzComponentProps> & {
+export type QuartzComponent = ((props: QuartzComponentProps) => unknown) & {
   css?: string | string[] | undefined;
   beforeDOMLoaded?: string | string[] | undefined;
   afterDOMLoaded?: string | string[] | undefined;
