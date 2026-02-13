@@ -1,6 +1,6 @@
 {
   "name": "@quartz-community/types",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Type definitions for Quartz community plugins",
   "type": "module",
   "license": "MIT",

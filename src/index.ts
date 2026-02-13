@@ -46,7 +46,8 @@ export type CSSResource = {
 export interface StaticResources {
   css: CSSResource[];
   js: JSResource[];
-  additionalHead: unknown[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  additionalHead: any[];
 }
 
 // ============================================================================
