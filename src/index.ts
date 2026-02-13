@@ -69,7 +69,6 @@ export interface GlobalConfiguration {
   baseUrl?: string;
   theme?: unknown;
   locale?: string;
-  [key: string]: unknown;
 }
 
 /**
@@ -79,7 +78,8 @@ export interface GlobalConfiguration {
  */
 export interface QuartzConfig {
   configuration: GlobalConfiguration;
-  [key: string]: unknown;
+  plugins?: unknown;
+  externalPlugins?: unknown;
 }
 
 // ============================================================================
