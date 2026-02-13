@@ -158,6 +158,7 @@ export interface PluginTypes {
   transformers: QuartzTransformerPluginInstance[];
   filters: QuartzFilterPluginInstance[];
   emitters: QuartzEmitterPluginInstance[];
+  pageTypes: QuartzPageTypePluginInstance[];
 }
 
 export type QuartzTransformerPlugin<Options extends OptionType = undefined> = (
@@ -209,8 +210,65 @@ export type QuartzEmitterPluginInstance = {
 };
 
 // ============================================================================
-// Utility Types - Commonly used helper types
+// PageType Plugin Types - Declarative page rendering plugins
 // ============================================================================
+
+/**
+ * Matcher function: determines if a source file belongs to a page type.
+ * Returns true if the page type should own this file.
+ */
+export type PageMatcher = (args: {
+  slug: FullSlug;
+  fileData: QuartzPluginData & Record<string, unknown>;
+  cfg: GlobalConfiguration;
+}) => boolean;
+
+/**
+ * Virtual page descriptor for page types that generate pages
+ * from aggregated data (e.g., tag indexes, folder listings).
+ */
+export interface VirtualPage {
+  slug: FullSlug;
+  title: string;
+  data: Partial<QuartzPluginData> & Record<string, unknown>;
+}
+
+/**
+ * Generator function: produces virtual pages from all processed content.
+ * Used by page types that don't match source files but instead create
+ * synthetic pages (e.g., one page per tag, one page per folder).
+ */
+export type PageGenerator = (args: {
+  content: ProcessedContent[];
+  cfg: GlobalConfiguration;
+  ctx: BuildCtx;
+}) => VirtualPage[];
+
+/**
+ * A PageType plugin definition.
+ *
+ * PageTypes are a declarative abstraction over page-rendering emitters.
+ * Each PageType declares which files it owns (via `match`), optionally
+ * generates virtual pages (via `generate`), and provides a body component
+ * and layout reference for rendering.
+ */
+export type QuartzPageTypePlugin<Options extends OptionType = undefined> = (
+  opts?: Options,
+) => QuartzPageTypePluginInstance;
+
+export type QuartzPageTypePluginInstance = {
+  name: string;
+  /** Higher priority wins when multiple page types match the same file. Default: 0. */
+  priority?: number;
+  /** Determines which source files this page type owns. */
+  match: PageMatcher;
+  /** Produces virtual pages from aggregated content data. */
+  generate?: PageGenerator;
+  /** Layout key — references a key in `layout.byPageType`. */
+  layout: string;
+  /** The body component constructor for this page type. */
+  body: QuartzComponentConstructor;
+};
 
 export type HTMLAttributes = Record<
   string,
