@@ -261,6 +261,8 @@ export type QuartzPageTypePluginInstance = {
   name: string;
   /** Higher priority wins when multiple page types match the same file. Default: 0. */
   priority?: number;
+  /** File extensions this page type handles (e.g. [".canvas"]). Files with these extensions are excluded from the default asset emitter and processed by generate() instead. */
+  fileExtensions?: string[];
   /** Determines which source files this page type owns. */
   match: PageMatcher;
   /** Produces virtual pages from aggregated content data. */
