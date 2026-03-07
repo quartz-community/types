@@ -245,6 +245,9 @@ export type PageGenerator = (args: {
   ctx: BuildCtx;
 }) => VirtualPage[];
 
+/** A function that mutates a HAST tree at render time, when allFiles is available. */
+export type TreeTransform = (root: HtmlRoot, slug: FullSlug, componentData: QuartzComponentProps) => void;
+
 /**
  * A PageType plugin definition.
  *
@@ -273,6 +276,8 @@ export type QuartzPageTypePluginInstance = {
   frame?: string;
   /** The body component constructor for this page type. */
   body: QuartzComponentConstructor;
+  /** Optional render-time HAST tree transforms (e.g. resolving inline codeblocks). */
+  treeTransforms?: (ctx: BuildCtx) => TreeTransform[];
 };
 
 // ============================================================================
