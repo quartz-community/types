@@ -239,5 +239,17 @@ type HTMLAttributes = Record<string, string | number | boolean | undefined>;
 type EventHandler = (event: Event) => void;
 type CleanupFunction = () => void;
 type ClassValue = string | number | boolean | undefined | null | ClassValue[];
+type ContentDetails = {
+    slug: FullSlug;
+    filePath: FilePath;
+    title: string;
+    links: string[];
+    tags: string[];
+    content: string;
+    richContent?: string;
+    date?: Date;
+    description?: string;
+};
+type ContentIndex = Record<FullSlug, ContentDetails>;
 
-export { type Argv, type BuildCtx, type CSSResource, type ChangeEvent, type ClassValue, type CleanupFunction, type EventHandler, type ExternalResourcesFn, type FilePath, type FullSlug, type GlobalConfiguration, type HTMLAttributes, type JSResource, type MarkdownContent, type PageFrame, type PageFrameProps, type PageGenerator, type PageMatcher, type PluginTypes, type ProcessedContent, type QuartzComponent, type QuartzComponentConstructor, type QuartzComponentProps, type QuartzConfig, type QuartzEmitterPlugin, type QuartzEmitterPluginInstance, type QuartzFilterPlugin, type QuartzFilterPluginInstance, type QuartzPageTypePlugin, type QuartzPageTypePluginInstance, type QuartzPluginData, type QuartzTransformerPlugin, type QuartzTransformerPluginInstance, type StaticResources, type StringResource, type TreeTransform, type VirtualPage, joinSegments };
+export { type Argv, type BuildCtx, type CSSResource, type ChangeEvent, type ClassValue, type CleanupFunction, type ContentDetails, type ContentIndex, type EventHandler, type ExternalResourcesFn, type FilePath, type FullSlug, type GlobalConfiguration, type HTMLAttributes, type JSResource, type MarkdownContent, type PageFrame, type PageFrameProps, type PageGenerator, type PageMatcher, type PluginTypes, type ProcessedContent, type QuartzComponent, type QuartzComponentConstructor, type QuartzComponentProps, type QuartzConfig, type QuartzEmitterPlugin, type QuartzEmitterPluginInstance, type QuartzFilterPlugin, type QuartzFilterPluginInstance, type QuartzPageTypePlugin, type QuartzPageTypePluginInstance, type QuartzPluginData, type QuartzTransformerPlugin, type QuartzTransformerPluginInstance, type StaticResources, type StringResource, type TreeTransform, type VirtualPage, joinSegments };

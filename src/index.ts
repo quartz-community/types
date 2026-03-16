@@ -246,7 +246,11 @@ export type PageGenerator = (args: {
 }) => VirtualPage[];
 
 /** A function that mutates a HAST tree at render time, when allFiles is available. */
-export type TreeTransform = (root: HtmlRoot, slug: FullSlug, componentData: QuartzComponentProps) => void;
+export type TreeTransform = (
+  root: HtmlRoot,
+  slug: FullSlug,
+  componentData: QuartzComponentProps,
+) => void;
 
 /**
  * A PageType plugin definition.
@@ -344,3 +348,21 @@ export type ClassValue =
   | undefined
   | null
   | ClassValue[];
+
+// ============================================================================
+// Content Index Types - Data shape for contentIndex.json
+// ============================================================================
+
+export type ContentDetails = {
+  slug: FullSlug;
+  filePath: FilePath;
+  title: string;
+  links: string[];
+  tags: string[];
+  content: string;
+  richContent?: string;
+  date?: Date;
+  description?: string;
+};
+
+export type ContentIndex = Record<FullSlug, ContentDetails>;
