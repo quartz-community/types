@@ -9,6 +9,7 @@ import type { PluggableList } from "unified";
 
 export type FilePath = string & { _brand: "FilePath" };
 export type FullSlug = string & { _brand: "FullSlug" };
+export type SimpleSlug = string & { _brand: "SimpleSlug" };
 
 export function joinSegments(...segments: string[]): FilePath {
   return segments
@@ -374,3 +375,49 @@ export type ContentIndex = Record<FullSlug, ContentDetails>;
 export type SortFn = (f1: QuartzPluginData, f2: QuartzPluginData) => number;
 
 export type ThemeKey = "lightMode" | "darkMode";
+
+export type ValidDateType = "created" | "modified" | "published";
+
+// ============================================================================
+// VFile DataMap Augmentation — canonical vfile shape for Quartz
+// ============================================================================
+
+declare module "vfile" {
+  interface DataMap {
+    slug: FullSlug;
+    filePath: FilePath;
+    relativePath: FilePath;
+    description: string;
+    text: string;
+    links: SimpleSlug[];
+    toc: { depth: number; text: string; slug: string }[];
+    collapseToc: boolean;
+    blocks: Record<string, import("hast").Element>;
+    htmlAst: import("hast").Root;
+    hasMermaidDiagram: boolean | undefined;
+    frontmatter: { [key: string]: unknown } & {
+      title: string;
+    } & Partial<{
+        tags: string[];
+        aliases: string[];
+        modified: string;
+        created: string;
+        published: string;
+        description: string;
+        socialDescription: string;
+        publish: boolean | string;
+        draft: boolean | string;
+        lang: string;
+        enableToc: string;
+        cssclasses: string[];
+        socialImage: string;
+        comments: boolean | string;
+      }>;
+    dates: {
+      created: Date;
+      modified: Date;
+      published: Date;
+    };
+    defaultDateType?: ValidDateType;
+  }
+}

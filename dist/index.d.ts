@@ -1,3 +1,4 @@
+import * as hast from 'hast';
 import { Root as Root$1 } from 'hast';
 import { Root } from 'mdast';
 import { VFile, Data } from 'vfile';
@@ -8,6 +9,9 @@ type FilePath = string & {
 };
 type FullSlug = string & {
     _brand: "FullSlug";
+};
+type SimpleSlug = string & {
+    _brand: "SimpleSlug";
 };
 declare function joinSegments(...segments: string[]): FilePath;
 type JSResource = {
@@ -253,5 +257,51 @@ type ContentDetails = {
 type ContentIndex = Record<FullSlug, ContentDetails>;
 type SortFn = (f1: QuartzPluginData, f2: QuartzPluginData) => number;
 type ThemeKey = "lightMode" | "darkMode";
+type ValidDateType = "created" | "modified" | "published";
+declare module "vfile" {
+    interface DataMap {
+        slug: FullSlug;
+        filePath: FilePath;
+        relativePath: FilePath;
+        description: string;
+        text: string;
+        links: SimpleSlug[];
+        toc: {
+            depth: number;
+            text: string;
+            slug: string;
+        }[];
+        collapseToc: boolean;
+        blocks: Record<string, hast.Element>;
+        htmlAst: hast.Root;
+        hasMermaidDiagram: boolean | undefined;
+        frontmatter: {
+            [key: string]: unknown;
+        } & {
+            title: string;
+        } & Partial<{
+            tags: string[];
+            aliases: string[];
+            modified: string;
+            created: string;
+            published: string;
+            description: string;
+            socialDescription: string;
+            publish: boolean | string;
+            draft: boolean | string;
+            lang: string;
+            enableToc: string;
+            cssclasses: string[];
+            socialImage: string;
+            comments: boolean | string;
+        }>;
+        dates: {
+            created: Date;
+            modified: Date;
+            published: Date;
+        };
+        defaultDateType?: ValidDateType;
+    }
+}
 
-export { type Argv, type BuildCtx, type CSSResource, type ChangeEvent, type ClassValue, type CleanupFunction, type ContentDetails, type ContentIndex, type EventHandler, type ExternalResourcesFn, type FilePath, type FullSlug, type GlobalConfiguration, type HTMLAttributes, type JSResource, type MarkdownContent, type PageFrame, type PageFrameProps, type PageGenerator, type PageMatcher, type PluginTypes, type ProcessedContent, type QuartzComponent, type QuartzComponentConstructor, type QuartzComponentProps, type QuartzConfig, type QuartzEmitterPlugin, type QuartzEmitterPluginInstance, type QuartzFilterPlugin, type QuartzFilterPluginInstance, type QuartzPageTypePlugin, type QuartzPageTypePluginInstance, type QuartzPluginData, type QuartzTransformerPlugin, type QuartzTransformerPluginInstance, type SortFn, type StaticResources, type StringResource, type ThemeKey, type TreeTransform, type VirtualPage, joinSegments };
+export { type Argv, type BuildCtx, type CSSResource, type ChangeEvent, type ClassValue, type CleanupFunction, type ContentDetails, type ContentIndex, type EventHandler, type ExternalResourcesFn, type FilePath, type FullSlug, type GlobalConfiguration, type HTMLAttributes, type JSResource, type MarkdownContent, type PageFrame, type PageFrameProps, type PageGenerator, type PageMatcher, type PluginTypes, type ProcessedContent, type QuartzComponent, type QuartzComponentConstructor, type QuartzComponentProps, type QuartzConfig, type QuartzEmitterPlugin, type QuartzEmitterPluginInstance, type QuartzFilterPlugin, type QuartzFilterPluginInstance, type QuartzPageTypePlugin, type QuartzPageTypePluginInstance, type QuartzPluginData, type QuartzTransformerPlugin, type QuartzTransformerPluginInstance, type SimpleSlug, type SortFn, type StaticResources, type StringResource, type ThemeKey, type TreeTransform, type ValidDateType, type VirtualPage, joinSegments };
