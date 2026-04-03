@@ -366,3 +366,11 @@ export type ContentDetails = {
 };
 
 export type ContentIndex = Record<FullSlug, ContentDetails>;
+
+// ============================================================================
+// Sort & Theme Types
+// ============================================================================
+
+export type SortFn = (f1: QuartzPluginData, f2: QuartzPluginData) => number;
+
+export type ThemeKey = "lightMode" | "darkMode";
