@@ -17,6 +17,7 @@
     "typescript"
   ],
   "files": [
+    "src",
     "dist",
     "globals.d.ts",
     "README.md",
@@ -40,7 +41,10 @@
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {},
+  "dependencies": {
+    "unified": "^11.0.5",
+    "vfile": "^6.0.3"
+  },
   "engines": {
     "node": ">=22",
     "npm": ">=10.9.2"
