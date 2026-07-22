@@ -39,7 +39,8 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
     "unified": "^11.0.5",
@@ -66,5 +67,8 @@
     "vfile": {
       "optional": true
     }
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
