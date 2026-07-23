@@ -40,7 +40,8 @@
     "build": "tsup",
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "release": "npm run build && changeset publish"
   },
   "dependencies": {
     "unified": "^11.0.5",
@@ -54,7 +55,8 @@
     "@types/hast": "^3.0.4",
     "@types/mdast": "^4.0.4",
     "tsup": "^8.5.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "@changesets/cli": "^2.29.2"
   },
   "peerDependencies": {
     "unified": "^11.0.5",
