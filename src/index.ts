@@ -388,7 +388,19 @@ export interface PageFrameProps {
   right: QuartzComponent[];
   /** Footer components */
   footer: QuartzComponent[];
+  /**
+   * Sidebar modes from `layout.sidebars` (Quartz 5.1+; undefined before). Frames with sidebars
+   * should put them on the sidebar elements as `data-sidebar-mode`; Quartz's stylesheet does the rest.
+   */
+  sidebars?: { left: SidebarMode; right: SidebarMode };
 }
+
+/**
+ * How a sidebar handles content taller than the screen (`layout.sidebars`, Quartz 5.1+):
+ * `fit` (default) — one screen tall, components shrink and scroll; `scroll` — stays in view and
+ * scrolls itself; `static` — scrolls away with the page.
+ */
+export type SidebarMode = "fit" | "scroll" | "static";
 
 /**
  * A PageFrame defines the inner HTML structure of a page inside the
