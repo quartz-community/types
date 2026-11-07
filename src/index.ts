@@ -71,6 +71,46 @@ export interface GlobalConfiguration {
   baseUrl?: string;
   theme?: unknown;
   locale?: string;
+  /** Built-in frontmatter parsing (Quartz 5.1+). */
+  frontmatter?: BuiltinFrontmatterConfig | boolean;
+  /** Built-in link processing, formerly crawl-links (Quartz 5.1+). */
+  links?: BuiltinLinksConfig | boolean;
+  /** Built-in draft handling, formerly remove-draft (Quartz 5.1+). */
+  drafts?: BuiltinDraftsConfig | boolean;
+  /** Built-in content index / sitemap / RSS, formerly content-index (Quartz 5.1+). */
+  contentIndex?: BuiltinContentIndexConfig | boolean;
+}
+
+interface BuiltinToggle {
+  enabled?: boolean;
+  order?: number;
+}
+
+export interface BuiltinFrontmatterConfig extends BuiltinToggle {
+  delimiters?: string | [string, string];
+  language?: "yaml" | "toml";
+}
+
+export interface BuiltinLinksConfig extends BuiltinToggle {
+  markdownLinkResolution?: "absolute" | "relative" | "shortest";
+  prettyLinks?: boolean;
+  openLinksInNewTab?: boolean;
+  lazyLoad?: boolean;
+  externalLinkIcon?: boolean;
+  disableBrokenWikilinks?: boolean;
+}
+
+export interface BuiltinDraftsConfig extends BuiltinToggle {
+  publish?: boolean;
+}
+
+export interface BuiltinContentIndexConfig extends BuiltinToggle {
+  enableSiteMap?: boolean;
+  enableRSS?: boolean;
+  rssLimit?: number;
+  rssFullHtml?: boolean;
+  rssSlug?: string;
+  includeEmptyFiles?: boolean;
 }
 
 /**
@@ -167,7 +207,22 @@ export type QuartzTransformerPlugin<Options extends OptionType = undefined> = (
   opts?: Options,
 ) => QuartzTransformerPluginInstance;
 
-export type QuartzTransformerPluginInstance = {
+/**
+ * Optional hook on every plugin instance (Quartz 5.1+): extra JSON-serialisable fields for a page's
+ * entry in `static/contentIndex.json`. Core fields cannot be overridden; on key collisions between
+ * plugins the first (in plugin order) wins.
+ */
+export type ContentIndexExtension = (args: {
+  ctx: BuildCtx;
+  fileData: QuartzPluginData;
+  entry: Readonly<ContentDetails>;
+}) => Record<string, unknown> | undefined | void;
+
+interface PluginHooks {
+  extendContentIndex?: ContentIndexExtension;
+}
+
+export type QuartzTransformerPluginInstance = PluginHooks & {
   name: string;
   textTransform?: (ctx: BuildCtx, src: string) => string;
   markdownPlugins?: (ctx: BuildCtx) => PluggableList;
@@ -179,7 +234,7 @@ export type QuartzFilterPlugin<Options extends OptionType = undefined> = (
   opts?: Options,
 ) => QuartzFilterPluginInstance;
 
-export type QuartzFilterPluginInstance = {
+export type QuartzFilterPluginInstance = PluginHooks & {
   name: string;
   shouldPublish(ctx: BuildCtx, content: ProcessedContent): boolean;
 };
@@ -194,7 +249,7 @@ export type QuartzEmitterPlugin<Options extends OptionType = undefined> = (
   opts?: Options,
 ) => QuartzEmitterPluginInstance;
 
-export type QuartzEmitterPluginInstance = {
+export type QuartzEmitterPluginInstance = PluginHooks & {
   name: string;
   emit: (
     ctx: BuildCtx,
@@ -265,7 +320,7 @@ export type QuartzPageTypePlugin<Options extends OptionType = undefined> = (
   opts?: Options,
 ) => QuartzPageTypePluginInstance;
 
-export type QuartzPageTypePluginInstance = {
+export type QuartzPageTypePluginInstance = PluginHooks & {
   name: string;
   /** Higher priority wins when multiple page types match the same file. Default: 0. */
   priority?: number;
@@ -343,12 +398,7 @@ export type EventHandler = (event: Event) => void;
 export type CleanupFunction = () => void;
 
 export type ClassValue =
-  | string
-  | number
-  | boolean
-  | undefined
-  | null
-  | ClassValue[];
+  string | number | boolean | undefined | null | ClassValue[];
 
 // ============================================================================
 // Content Index Types - Data shape for contentIndex.json
@@ -364,6 +414,8 @@ export type ContentDetails = {
   richContent?: string;
   date?: Date;
   description?: string;
+  /** Fields added by plugins through `extendContentIndex` (Quartz 5.1+). */
+  [extra: string]: unknown;
 };
 
 export type ContentIndex = Record<FullSlug, ContentDetails>;
