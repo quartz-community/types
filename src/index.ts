@@ -44,11 +44,27 @@ export type CSSResource = {
   spaPreserve?: boolean;
 };
 
+/**
+ * A file or directory a plugin ships with the site (Quartz 5.1+), copied to
+ * `<output>/static/plugins/<to>`. Client scripts get its URL from `window.quartzStaticUrl`:
+ * `new URL("plugins/<to>/…", window.quartzStaticUrl)`. Use it for large or optional client code
+ * (loaded with `import()` only where needed) instead of inline scripts, which every page
+ * downloads. Older Quartz versions ignore `assets` and leave `quartzStaticUrl` undefined.
+ */
+export interface StaticAsset {
+  /** Absolute path of a file or directory on disk (e.g. resolved from a dependency). */
+  from: string;
+  /** Destination below `static/plugins/`, e.g. "my-plugin/vendor". */
+  to: string;
+}
+
 export interface StaticResources {
   css: CSSResource[];
   js: JSResource[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   additionalHead: any[];
+  /** Files copied into the site output (Quartz 5.1+). See StaticAsset. */
+  assets?: StaticAsset[];
 }
 
 // ============================================================================
