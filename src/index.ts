@@ -147,6 +147,11 @@ export interface BuildCtx {
   allSlugs: FullSlug[];
   allFiles: FilePath[];
   incremental: boolean;
+  /**
+   * The site's content index (Quartz 5.1+): one entry per published page, virtual pages
+   * included. Available to emitters (except ComponentResources / PageTypeDispatcher); read-only.
+   */
+  contentIndex?: ReadonlyMap<FullSlug, Readonly<ContentDetails>>;
 }
 
 // ============================================================================
