@@ -315,12 +315,15 @@ export interface VirtualPage {
  * Generator function: produces virtual pages from all processed content.
  * Used by page types that don't match source files but instead create
  * synthetic pages (e.g., one page per tag, one page per folder).
+ *
+ * May return a promise (Quartz 5.1+, which awaits it); declare `quartz.quartzVersion: ">=5.1.0"`
+ * when you rely on that, since older versions don't wait for it.
  */
 export type PageGenerator = (args: {
   content: ProcessedContent[];
   cfg: GlobalConfiguration;
   ctx: BuildCtx;
-}) => VirtualPage[];
+}) => VirtualPage[] | Promise<VirtualPage[]>;
 
 /** A function that mutates a HAST tree at render time, when allFiles is available. */
 export type TreeTransform = (
