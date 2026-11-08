@@ -1,5 +1,13 @@
 # @quartz-community/types
 
+## 1.1.0
+
+### Minor Changes
+
+- 0158888: Types for Quartz's built-in processing: `GlobalConfiguration.frontmatter` / `links` / `drafts` / `contentIndex`, and the optional `extendContentIndex` hook on plugin instances that adds fields to `contentIndex.json` entries (`ContentDetails` now allows extra fields). `BuildCtx.contentIndex` types the shared content index emitters can reuse.
+- 897233c: `PageFrameProps.sidebars` and `SidebarMode`: the sidebar modes from `layout.sidebars` (Quartz 5.1+), for custom frames to put on their sidebar elements as `data-sidebar-mode`.
+- f5f6d5f: `StaticResources.assets` (`StaticAsset { from, to }`): files or directories a plugin ships with the site, copied by Quartz 5.1+ to `static/plugins/<to>` and addressed from client scripts via `window.quartzStaticUrl`.
+
 ## 1.0.0
 
 ### Major Changes
