@@ -1,5 +1,11 @@
 # @quartz-community/types
 
+## 1.2.0
+
+### Minor Changes
+
+- 19f09ca: `PageGenerator` may return a promise of its virtual pages (`VirtualPage[] | Promise<VirtualPage[]>`): Quartz 5.1+ awaits it, so a page type can do async work (run the transformers, bundle with esbuild) in `generate` (jackyzha0/quartz#2575).
+
 ## 1.1.0
 
 ### Minor Changes
