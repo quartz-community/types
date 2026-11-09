@@ -248,6 +248,17 @@ export type QuartzTransformerPluginInstance = PluginHooks & {
   textTransform?: (ctx: BuildCtx, src: string) => string;
   markdownPlugins?: (ctx: BuildCtx) => PluggableList;
   htmlPlugins?: (ctx: BuildCtx) => PluggableList;
+  /**
+   * rehype plugins for the pages that page types render from files (`.base`, `.canvas`, …).
+   * Those pages are rendered at emit time and never pass through `htmlPlugins`; these plugins
+   * run on each one's rendered body (with the page's vfile, so `file.data.frontmatter` and
+   * `file.data.referencedBy` are available) after the site's filters published it, and the page
+   * shows the resulting tree. `content` is the published content. Quartz 5.1+.
+   */
+  virtualPageHtmlPlugins?: (
+    ctx: BuildCtx,
+    content: ProcessedContent[],
+  ) => PluggableList;
   externalResources?: ExternalResourcesFn;
 };
 
@@ -482,6 +493,11 @@ declare module "vfile" {
     collapseToc: boolean;
     blocks: Record<string, import("hast").Element>;
     htmlAst: import("hast").Root;
+    /**
+     * On a page that stands for a file (`.base`, `.canvas`, …): the published pages that link to
+     * or embed it. Set before the site's filters see the page (Quartz 5.1+).
+     */
+    referencedBy: FullSlug[];
     hasMermaidDiagram: boolean | undefined;
     frontmatter: { [key: string]: unknown } & {
       title: string;
