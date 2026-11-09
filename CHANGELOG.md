@@ -1,5 +1,11 @@
 # @quartz-community/types
 
+## 1.3.1
+
+### Patch Changes
+
+- 1c91249: `globals.d.ts` declares `window.quartzStaticUrl` (absolute URL of the site's `static/` folder, for plugin assets) and `window.quartzPrefetch` (Quartz 5.1's prefetch cache, with the `PrefetchedPage` type), so client scripts can use them without their own declarations.
+
 ## 1.3.0
 
 ### Minor Changes
