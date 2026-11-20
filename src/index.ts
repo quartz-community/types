@@ -229,6 +229,15 @@ export type QuartzTransformerPlugin<Options extends OptionType = undefined> = (
 ) => QuartzTransformerPluginInstance;
 
 /**
+ * Async variant of {@link QuartzTransformerPlugin} (Quartz 5.2+): Quartz awaits the factory before the
+ * build, so a plugin can fetch or prepare data first. Declare the plugin's category in
+ * its manifest; Quartz can't infer it from an async factory.
+ */
+export type QuartzAsyncTransformerPlugin<
+  Options extends OptionType = undefined,
+> = (opts?: Options) => Promise<QuartzTransformerPluginInstance>;
+
+/**
  * Optional hook on every plugin instance (Quartz 5.1+): extra JSON-serialisable fields for a page's
  * entry in `static/contentIndex.json`. Core fields cannot be overridden; on key collisions between
  * plugins the first (in plugin order) wins.
@@ -266,6 +275,15 @@ export type QuartzFilterPlugin<Options extends OptionType = undefined> = (
   opts?: Options,
 ) => QuartzFilterPluginInstance;
 
+/**
+ * Async variant of {@link QuartzFilterPlugin} (Quartz 5.2+): Quartz awaits the factory before the
+ * build, so a plugin can fetch or prepare data first. Declare the plugin's category in
+ * its manifest; Quartz can't infer it from an async factory.
+ */
+export type QuartzAsyncFilterPlugin<Options extends OptionType = undefined> = (
+  opts?: Options,
+) => Promise<QuartzFilterPluginInstance>;
+
 export type QuartzFilterPluginInstance = PluginHooks & {
   name: string;
   shouldPublish(ctx: BuildCtx, content: ProcessedContent): boolean;
@@ -280,6 +298,15 @@ export type ChangeEvent = {
 export type QuartzEmitterPlugin<Options extends OptionType = undefined> = (
   opts?: Options,
 ) => QuartzEmitterPluginInstance;
+
+/**
+ * Async variant of {@link QuartzEmitterPlugin} (Quartz 5.2+): Quartz awaits the factory before the
+ * build, so a plugin can fetch or prepare data first. Declare the plugin's category in
+ * its manifest; Quartz can't infer it from an async factory.
+ */
+export type QuartzAsyncEmitterPlugin<Options extends OptionType = undefined> = (
+  opts?: Options,
+) => Promise<QuartzEmitterPluginInstance>;
 
 export type QuartzEmitterPluginInstance = PluginHooks & {
   name: string;
@@ -354,6 +381,14 @@ export type TreeTransform = (
 export type QuartzPageTypePlugin<Options extends OptionType = undefined> = (
   opts?: Options,
 ) => QuartzPageTypePluginInstance;
+
+/**
+ * Async variant of {@link QuartzPageTypePlugin} (Quartz 5.2+): Quartz awaits the factory before the
+ * build, so a plugin can fetch or prepare data first. Declare the plugin's category in
+ * its manifest; Quartz can't infer it from an async factory.
+ */
+export type QuartzAsyncPageTypePlugin<Options extends OptionType = undefined> =
+  (opts?: Options) => Promise<QuartzPageTypePluginInstance>;
 
 export type QuartzPageTypePluginInstance = PluginHooks & {
   name: string;
