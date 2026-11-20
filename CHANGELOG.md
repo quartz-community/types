@@ -1,5 +1,11 @@
 # @quartz-community/types
 
+## 1.4.0
+
+### Minor Changes
+
+- 75a77ce: Add `QuartzAsyncTransformerPlugin` and the other `QuartzAsync*Plugin` types: factories that return a promise, which Quartz 5.2 awaits.
+
 ## 1.3.1
 
 ### Patch Changes
