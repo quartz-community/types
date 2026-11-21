@@ -1,5 +1,11 @@
 # @quartz-community/types
 
+## 1.5.0
+
+### Minor Changes
+
+- 421e863: Transformers can declare `renderTransforms` (Quartz 5.2+): transforms of a page's content when it is rendered, `before` transclusions are inlined and page types' `treeTransforms` run, and `after` them, on the finished content. New type `RenderTransforms`.
+
 ## 1.4.0
 
 ### Minor Changes
