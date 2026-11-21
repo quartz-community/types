@@ -268,8 +268,23 @@ export type QuartzTransformerPluginInstance = PluginHooks & {
     ctx: BuildCtx,
     content: ProcessedContent[],
   ) => PluggableList;
+  /**
+   * Transforms of a page's content tree when the page is rendered, when the content of other
+   * pages (and allFiles) is available. `before` runs before transclusions are inlined and page
+   * types' `treeTransforms` run (e.g. bases are filled in), `after` runs on the finished content.
+   * E.g. encrypted-pages swaps its page's content in `before` and encrypts the finished content in
+   * `after`. Each transform gets the page's own tree (a copy), slug and component data.
+   * Quartz 5.2+ (older versions don't call it).
+   */
+  renderTransforms?: (ctx: BuildCtx) => RenderTransforms;
   externalResources?: ExternalResourcesFn;
 };
+
+/** A transformer's render-time transforms (see `renderTransforms`). Quartz 5.2+. */
+export interface RenderTransforms {
+  before?: TreeTransform[];
+  after?: TreeTransform[];
+}
 
 export type QuartzFilterPlugin<Options extends OptionType = undefined> = (
   opts?: Options,
